@@ -1,0 +1,97 @@
+name: 🚀 Deploy Smart Expense Tracker to AWS
+
+on:
+  push:
+    branches: [ "main" ]     # Deploy automatically when code is pushed to main
+  workflow_dispatch:          # Allow manual trigger from GitHub UI
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      # Step 1: Checkout code
+      - name: 🧩 Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Python
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # Step 3: Install AWS CLI
+      - name: ⚙️ Install AWS CLI
+        run: |
+          pip install awscli
+
+      # Step 4: Package all Lambda functions
+      - name: 📦 Package Lambda functions
+        run: |
+          mkdir -p build
+          for dir in lambda/*; do
+            func_name=$(basename $dir)
+            echo "📁 Packaging function: $func_name"
+            cd $dir
+            pip install -r requirements.txt -t . --quiet
+            zip -r ../../build/${func_name}.zip . > /dev/null
+            cd ../..
+          done
+          echo "✅ All Lambda functions packaged into build/ folder"
+
+      # Step 5: Configure AWS credentials
+      - name: 🔐 Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      # Step 6: (Optional) Create deployment bucket if not exists
+      # This static bucket is used to store lambda zips for CloudFormation packaging
+      - name: ☁️ Ensure deployment bucket exists
+        run: |
+          DEPLOY_BUCKET="smart-expense-deployments-${{ secrets.AWS_REGION }}-${{ secrets.AWS_ACCOUNT_ID }}"
+          echo "🪣 Checking if deployment bucket exists: $DEPLOY_BUCKET"
+          if ! aws s3 ls "s3://$DEPLOY_BUCKET" 2>/dev/null; then
+            echo "Bucket not found. Creating..."
+            aws s3 mb "s3://$DEPLOY_BUCKET"
+          fi
+          echo "✅ Deployment bucket ready: $DEPLOY_BUCKET"
+          echo "DEPLOY_BUCKET=$DEPLOY_BUCKET" >> $GITHUB_ENV
+
+      # Step 7: Upload build artifacts to S3
+      - name: ☁️ Upload Lambda packages to S3
+        run: |
+          echo "Uploading zips to S3 bucket: $DEPLOY_BUCKET"
+          aws s3 sync build/ s3://$DEPLOY_BUCKET/ --delete
+          echo "✅ Upload complete"
+
+      # Step 8 (optional): Run unit tests before deploy
+      # Uncomment if you add tests in future
+      #
+      # - name: 🧪 Run unit tests
+      #   run: |
+      #     pytest --maxfail=1 --disable-warnings -q
+
+      # Step 9: Deploy or update CloudFormation stack
+      - name: 🚀 Deploy CloudFormation stack
+        run: |
+          aws cloudformation deploy \
+            --template-file infra/smart-expense-tracker.yml \
+            --stack-name smart-expense-tracker \
+            --capabilities CAPABILITY_NAMED_IAM \
+            --parameter-overrides \
+              DeploymentS3Bucket=$DEPLOY_BUCKET \
+              LambdaRuntime=python3.12
+
+      # Step 10: Confirm deployment success
+      - name: ✅ Verify stack status
+        run: |
+          aws cloudformation describe-stacks \
+            --stack-name smart-expense-tracker \
+            --query "Stacks[0].StackStatus" \
+            --output text
