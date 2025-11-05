@@ -81,7 +81,7 @@ jobs:
       - name: 🚀 Deploy CloudFormation stack
         run: |
           aws cloudformation deploy \
-            --template-file infra/SMT.yml \
+            --template-file infra/SMT.yaml \
             --stack-name smart-expense-tracker \
             --capabilities CAPABILITY_NAMED_IAM \
             --parameter-overrides \
