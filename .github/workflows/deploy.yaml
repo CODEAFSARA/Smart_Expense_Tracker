@@ -80,13 +80,15 @@ jobs:
       # Step 9: Deploy or update CloudFormation stack
       - name: 🚀 Deploy CloudFormation stack
         run: |
-          aws cloudformation deploy \
-            --template-file infra/SMT.yaml \
-            --stack-name smart-expense-tracker \
-            --capabilities CAPABILITY_NAMED_IAM \
-            --parameter-overrides \
-              DeploymentS3Bucket=$DEPLOY_BUCKET \
-              LambdaRuntime=python3.12
+          run: |
+                aws cloudformation deploy \
+                  --template-file Smart_Expense_Tracker/infra/SMT.yaml \
+                  --stack-name smart-expense-tracker \
+                  --capabilities CAPABILITY_NAMED_IAM \
+                  --parameter-overrides \
+                    DeploymentS3Bucket=$DEPLOY_BUCKET \
+                    LambdaRuntime=python3.12
+
 
       # Step 10: Confirm deployment success
       - name: ✅ Verify stack status
