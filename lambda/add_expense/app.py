@@ -25,13 +25,21 @@ def handler(event, context):
         expense_id = str(uuid.uuid4())
         date = body.get('date') or datetime.utcnow().strftime("%Y-%m-%d")
 
+        # item = {
+        #     'expenseId': expense_id,
+        #     'userId': body['userId'],
+        #     'amount': str(body['amount']),
+        #     'category': body.get('category','uncategorized'),
+        #     'date': date,
+        #     'description': body.get('description',''),
+        # }
         item = {
-            'expenseId': expense_id,
-            'userId': body['userId'],
-            'amount': str(body['amount']),
-            'category': body.get('category','uncategorized'),
-            'date': date,
-            'description': body.get('description',''),
+            'UserId': body['userId'],
+            'ExpenseDate': date,
+            'ExpenseId': expense_id,
+            'Amount': str(body['amount']),
+            'Category': body.get('category','uncategorized'),
+            'Description': body.get('description',''),
         }
 
         if 'receiptKey' in body:
