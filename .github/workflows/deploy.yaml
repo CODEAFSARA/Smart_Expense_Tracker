@@ -82,8 +82,8 @@ jobs:
         run: |
           echo "DEPLOY_BUCKET is set to: $DEPLOY_BUCKET"
           echo "ALERT_EMAIL is set to: $ALERT_EMAIL"
-        env:
-          ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
+        # env:
+        #   ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
 
       - name: 🚀 Deploy CloudFormation stack
         run: |
@@ -94,7 +94,7 @@ jobs:
             --parameter-overrides \
               DeploymentS3Bucket=$DEPLOY_BUCKET \
               LambdaRuntime=python3.12
-              AllowedEmailForAlerts=$ALERT_EMAIL
+              AllowedEmailForAlerts=a4afsi@gmail.com
           
 
       # Step 10: Confirm deployment success
