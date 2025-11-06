@@ -114,7 +114,7 @@ Resources:
       Role: !GetAtt ExpenseTrackerLambdaRole.Arn
       Code:
         S3Bucket: !Ref DeploymentS3Bucket
-        S3Key: get_expenses.zip
+        S3Key: get_expense.zip
       Timeout: 10
       MemorySize: 256
       Environment:
@@ -146,7 +146,7 @@ Resources:
       Role: !GetAtt ExpenseTrackerLambdaRole.Arn
       Code:
         S3Bucket: !Ref DeploymentS3Bucket
-        S3Key: presign_upload.zip
+        S3Key: predesign_upload.zip
       Timeout: 10
       MemorySize: 256
       Environment:
