@@ -86,6 +86,7 @@ jobs:
         #   ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
 
       - name: 🚀 Deploy CloudFormation stack
+        - name: 🚀 Deploy CloudFormation stack
         run: |
           aws cloudformation deploy \
             --template-file Infra/SMT.yaml \
@@ -93,8 +94,9 @@ jobs:
             --capabilities CAPABILITY_NAMED_IAM \
             --parameter-overrides \
               DeploymentS3Bucket=$DEPLOY_BUCKET \
-              LambdaRuntime=python3.12
+              LambdaRuntime=python3.12 \
               AllowedEmailForAlerts=a4afsi@gmail.com
+
           
 
       # Step 10: Confirm deployment success
