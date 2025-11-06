@@ -43,7 +43,9 @@ Resources:
                   - s3:GetObject
                   - s3:PutObject
                   - s3:DeleteObject
-                Resource: !Sub "${RecipientsBucket.Arn}/*"
+                # Resource: !Sub "${RecipientsBucket.Arn}/*"
+                Resource: !Sub "arn:aws:s3:::${RecipientsBucket}/*"
+
               - Effect: Allow
                 Action:
                   - logs:CreateLogGroup
@@ -55,8 +57,6 @@ Resources:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions: 
-        - AttributeName: ExpenseId
-          AttributeType: S
         - AttributeName: UserId
           AttributeType: S
         - AttributeName: ExpenseDate
@@ -75,7 +75,7 @@ Resources:
           Value: SmartExpenseTracker
         - Key: Environment
           Value: dev
-    DeletionPolicy: Retain
+    # DeletionPolicy: Retain
 
   RecipientsBucket:
     Type: AWS::S3::Bucket
@@ -86,7 +86,7 @@ Resources:
         BlockPublicPolicy: true
         IgnorePublicAcls: true
         RestrictPublicBuckets: true
-    DeletionPolicy: Retain
+    # DeletionPolicy: Retain
 
   AddExpenseFunction:
     Type: AWS::Lambda::Function
