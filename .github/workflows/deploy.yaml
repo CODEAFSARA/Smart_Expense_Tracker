@@ -78,6 +78,7 @@ jobs:
       #     pytest --maxfail=1 --disable-warnings -q
 
       # Step 9: Deploy or update CloudFormation stack
+      #
       - name: 🚀 Deploy CloudFormation stack
         run: |
           aws cloudformation deploy \
