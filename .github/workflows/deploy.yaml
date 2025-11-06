@@ -106,17 +106,17 @@ jobs:
               LambdaRuntime=python3.12 \
               AllowedEmailForAlerts=a4@gmail.com
           
-      - name: 🕵️ Diagnose CloudFormation failure
+      - name: 🩺 Diagnose CloudFormation failure
+        if: failure()              # ✅ only runs if the deploy step failed
         run: |
+          echo "Fetching CloudFormation events..."
           aws cloudformation describe-stack-events \
             --stack-name smart-expense-tracker \
-            --query "StackEvents[?ResourceStatus=='CREATE_FAILED'].[ResourceType,LogicalResourceId,ResourceStatusReason]" \
-            --output table
+            --max-items 20
 
-      # Step 10: Confirm deployment success
       - name: ✅ Verify stack status
+        if: always()               # ✅ runs regardless of success or failure
         run: |
           aws cloudformation describe-stacks \
             --stack-name smart-expense-tracker \
-            --query "Stacks[0].StackStatus" \
-            --output text
+            --query "Stacks[0].StackStatus" --output text
