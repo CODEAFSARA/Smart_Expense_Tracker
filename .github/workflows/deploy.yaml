@@ -94,12 +94,12 @@ jobs:
           else
             echo "No rollback stack found, continuing..."
           fi
-      - name: 📦 Upload Lambda packages to S3
-        run: |
-          aws s3 cp lambda/add_expense.zip s3://$DEPLOY_BUCKET/add_expense.zip
-          aws s3 cp lambda/get_expenses.zip s3://$DEPLOY_BUCKET/get_expenses.zip
-          aws s3 cp lambda/delete_expense.zip s3://$DEPLOY_BUCKET/delete_expense.zip
-          aws s3 cp lambda/presign_upload.zip s3://$DEPLOY_BUCKET/presign_upload.zip
+      # - name: 📦 Upload Lambda packages to S3
+      #   run: |
+      #     aws s3 cp lambda/add_expense.zip s3://$DEPLOY_BUCKET/add_expense.zip
+      #     aws s3 cp lambda/get_expenses.zip s3://$DEPLOY_BUCKET/get_expenses.zip
+      #     aws s3 cp lambda/delete_expense.zip s3://$DEPLOY_BUCKET/delete_expense.zip
+      #     aws s3 cp lambda/presign_upload.zip s3://$DEPLOY_BUCKET/presign_upload.zip
       - name: ✅ Verify Lambda packages uploaded successfully
         run: |
           echo "Checking if Lambda ZIPs exist in $DEPLOY_BUCKET ..."
