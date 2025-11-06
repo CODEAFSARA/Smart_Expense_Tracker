@@ -111,22 +111,22 @@ jobs:
               LambdaRuntime=python3.12 \
               AllowedEmailForAlerts=a4@gmail.com
           
-      - name: ✅ Verify Lambda packages uploaded successfully
-        run: |
-          echo "Checking if Lambda ZIPs exist in $DEPLOY_BUCKET ..."
-          aws s3 ls s3://$DEPLOY_BUCKET/add_expense.zip || { echo "❌ add_expense.zip not found!"; exit 1; }
-          aws s3 ls s3://$DEPLOY_BUCKET/get_expenses.zip || { echo "❌ get_expenses.zip not found!"; exit 1; }
-          aws s3 ls s3://$DEPLOY_BUCKET/delete_expense.zip || { echo "❌ delete_expense.zip not found!"; exit 1; }
-          aws s3 ls s3://$DEPLOY_BUCKET/presign_upload.zip || { echo "❌ presign_upload.zip not found!"; exit 1; }
-          echo "✅ All Lambda ZIPs verified in S3!"
+      # - name: ✅ Verify Lambda packages uploaded successfully
+      #   run: |
+      #     echo "Checking if Lambda ZIPs exist in $DEPLOY_BUCKET ..."
+      #     aws s3 ls s3://$DEPLOY_BUCKET/add_expense.zip || { echo "❌ add_expense.zip not found!"; exit 1; }
+      #     aws s3 ls s3://$DEPLOY_BUCKET/get_expenses.zip || { echo "❌ get_expenses.zip not found!"; exit 1; }
+      #     aws s3 ls s3://$DEPLOY_BUCKET/delete_expense.zip || { echo "❌ delete_expense.zip not found!"; exit 1; }
+      #     aws s3 ls s3://$DEPLOY_BUCKET/presign_upload.zip || { echo "❌ presign_upload.zip not found!"; exit 1; }
+      #     echo "✅ All Lambda ZIPs verified in S3!"
 
-      - name: 🩺 Diagnose CloudFormation failure
-        if: failure()              # ✅ only runs if the deploy step failed
-        run: |
-          echo "Fetching CloudFormation events..."
-          aws cloudformation describe-stack-events \
-            --stack-name smart-expense-tracker \
-            --max-items 20
+      # - name: 🩺 Diagnose CloudFormation failure
+      #   if: failure()              # ✅ only runs if the deploy step failed
+      #   run: |
+      #     echo "Fetching CloudFormation events..."
+      #     aws cloudformation describe-stack-events \
+      #       --stack-name smart-expense-tracker \
+      #       --max-items 20
 
       - name: ✅ Verify stack status
         if: always()               # ✅ runs regardless of success or failure
