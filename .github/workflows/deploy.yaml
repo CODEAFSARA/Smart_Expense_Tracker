@@ -83,7 +83,6 @@ jobs:
           echo "DEPLOY_BUCKET is set to: $DEPLOY_BUCKET"
           echo "ALERT_EMAIL is set to: $ALERT_EMAIL"
         env:
-          DEPLOY_BUCKET: ${{ secrets.DEPLOY_BUCKET }}
           ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
 
       - name: 🚀 Deploy CloudFormation stack
