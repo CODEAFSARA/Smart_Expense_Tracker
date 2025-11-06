@@ -87,6 +87,7 @@ jobs:
             --parameter-overrides \
               DeploymentS3Bucket=$DEPLOY_BUCKET \
               LambdaRuntime=python3.12
+              AllowedEmailForAlerts=$ALERT_EMAIL
           
 
       # Step 10: Confirm deployment success
